@@ -145,4 +145,3 @@ Your predecessor left to travel the world, and the expectations are high on your
 ability to help "Awesome Inc.” to grow a culture of collaboration with a
 technical mindset, while managing their existing web services. That’s exactly
 what DevOps is about!
-
