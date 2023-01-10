@@ -1,4 +1,4 @@
-## Introduction to DevOps: Automate Everything to Focus on What Really Matters
+## Module 1: Introduction to DevOps: Automate Everything to Focus on What Really Matters
 ## Prerequisites
 - Shell terminal basics, using command lines:
 - Git with the command line (and also a graphical interface)

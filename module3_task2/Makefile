@@ -1,4 +1,4 @@
-# Define variables
+# Variable defination
 Publish=hugo
 SHELLCHECK=shellcheck
 
