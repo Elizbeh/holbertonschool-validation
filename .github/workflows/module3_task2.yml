@@ -1,7 +1,6 @@
 name: module3_task2
 on:
-  push:
-    branches: master
+  push: master
   schedule:
     - cron: "0 0 * * *"
 
