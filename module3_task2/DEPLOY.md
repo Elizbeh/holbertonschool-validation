@@ -3,7 +3,7 @@
 ### What is in the archive and how to unarchive it?
 
 - In the archive 'awesome-website.zip', you will find the 'dist/' folder
-- Use the command line: `unzip awesome-website.zip` 
+- Use the command line: `unzip awesome-website.zip`
 to unarchive it in your current directory
 
 ### What are the commands to start and stop the application?
