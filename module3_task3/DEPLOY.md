@@ -8,7 +8,7 @@ to unarchive it in your current directory
 
 ## How to verify the version
   
-  - Run git tag
+- Run git tag
 
 ## What are the commands to start and stop the application?
 
