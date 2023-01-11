@@ -6,6 +6,10 @@
 - Use the command line: `unzip awesome-website.zip`
 to unarchive it in your current directory
 
+## How to verify the version
+
+- Run git tag
+
 ## What are the commands to start and stop the application?
 
 - Generate the go-hugo website by running the command `make build`
