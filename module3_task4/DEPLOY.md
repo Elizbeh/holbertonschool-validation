@@ -23,3 +23,8 @@ to unarchive it in your current directory
 
 - Run  the command `hugo server` to verify that the go hugo website is running currectly.
 - Then check it out on local host [http://localhost:1313/]
+
+## Releases
+
+New release is created with the awesome-website.zip archive,
+pointing to the tag 1.0.0
