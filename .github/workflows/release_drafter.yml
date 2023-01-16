@@ -1,49 +1,59 @@
 ---
-name: release_drafter
-# https://github.com/release-drafter/release-drafter
+name: module4_task0
 on:
   push:
-    # branches to consider in the event; optional, defaults to all
     branches:
       - master
       - master
-  # pull_request event is required only for autolabeler
+  # https://www.freeformatter.com/cron-expression-generator-quartz.html
+  schedule:
+    - cron: "0 0 * * *"
+  # https://frontside.com/blog/2020-05-26-github-actions-pull_request/
   pull_request:
-    # Only following types are handled by the action, but one can default to all
-    # as well
-    types: [opened, reopened, synchronize]
-    # pull_request_target event is required for autolabeler to support PRs from
-    # forks
-    # pull_request_target:
-    # types: [opened, reopened, synchronize]
-
-permissions:
-  contents: read
-
+    types: [opened, reopened, edited, ready_for_review]
 jobs:
-  update_release_draft:
-    permissions:
-      # write permission is required to create a github release
-      contents: write
-      # write permission is required for autolabeler
-      # otherwise, read permission is required at least
-      pull-requests: write
+  module4_task0:
     runs-on: ubuntu-18.04
     steps:
-      # (Optional) GitHub Enterprise requires GHE_HOST variable set
-      # name: Set GHE_HOST
-      # run: |
-      # echo "GHE_HOST=${GITHUB_SERVER_URL##https:\/\/}" >> $GITHUB_ENV
-
-      # Drafts your next Release notes as Pull Requests are merged into
-      # "master"
-      - uses: release-drafter/release-drafter@v5
-        # (Optional) specify config name to use, relative to .github/. Default:
-        # release-drafter.yml
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup
+        run: |
+          cd module4_task0/
+          ./setup.sh
+      - name: build
+        run: |
+          cd module4_task0/
+          make build
+      - name: Integration tests
+        run: |
+          cd module4_task0/
+          make package
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          publish: true
-          config-name: release_drafter.yml
-        # disable-autolabeler: true
+          tag_name: 1.0.1
+          files: |
+            module4_task0/awesome-website.zip
+            module4_task0/DEPLOY.md
+      - name: archive build
+        if: ${{ success()}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: upload-package
+          path: module4_task0/awesome-website.zip
+      - name: deploy
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: './module4_task0/dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: '🚀 Deployed on'
+          publish-message: '🎉 Published on'
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-...
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
