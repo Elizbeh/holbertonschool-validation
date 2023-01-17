@@ -1,40 +1,64 @@
-help:	## Show this
-	sed -ne '/@sed/!s/## //p' Makefile
+## Declare variables for used commands:x
+HUGO=hugo
+SHELLCHECK=shellcheck
+export PATH
 
-.PHONY: build
-build:	## Generate the website from the markdown language
-	brew install hugo
-	hugo
+## Declare a list of phony targets
+.PHONY: build build-docker build-tools test
+
+
+build:## Installhugo package, Run the hugo, Create a file
+	sudo apt install hugo
+	$(HUGO)
 	touch awesome-api
 
-clean:	## Delete the website done with build command
-	rm -rf dist/*
+build-docker:## Build a Docker image for the build directory
+	docker build -t "awesome:build" ./build --no-cache
 
-post:	## Create a new blog post from the environment variables POST_TITLE and POST_NAME
-	hugo new posts/$(POST_NAME).md
-	sed -i 's#title: ".*"#title: "$(POST_TITLE)"#g' content/posts/$(POST_NAME).md
+build-tools:## Install the hugo package and tools
+	sudo apt install hugo
 
-package: ## Create a package
-	make build
-	mkdir -p dist
-	zip awesome-website.zip dist
+test:## Run the clean target inside a Docker container , execute hugo and ls ./dist
+	docker run awesome:build sh -c "make clean || echo 'Lint Failed'"
+	docker run awesome:build sh -c "hugo; ls ./dist/*"
 
-lint: ## lint with markdown
+clean:## Remove all files in the dist directory
+	rm -rf ./dist*
+
+post:## Create a new post and set the title
+	$(HUGO) new posts/$(POST_NAME).md
+	sed -i 's/title: .*/title: "$(POST_TITLE)"/' content/posts/$(POST_NAME).md
+
+lint: ## Install curl, Install nodejs, Install Markdownlint and verify MD
 	apt install curl -y
 	curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
 	apt install nodejs -y
 	npm install -g markdownlint-cli 1>&2
-	markdownlint README.md
-	markdownlint DEPLOY.md
+	markdownlint README.md DEPLOY.md
 
-unit-tests: ## not implemented yet
-	touch coverage-units.out
+markdownlint: ## Run the markdownlint tool on the README.md and DEPLOY.md files
+	markdownlint README.md DEPLOY.md
 
-integration-tests: ## not implemented yet
+shellcheck:## Run the shellcheck tool on the setup.sh script
+	$(SHELLCHECK) setup.sh >/dev/null 2>&1 || echo "Lint Failed"
+
+integration-tests:## Create a coverage-integrations.out file
 	touch coverage-integrations.out
 
-.PHONY: build-docker
-build-docker: ## build docker debian
-	docker build -t "awesome:build" ./build
+unit-tests:## Create a coverage-units.out file
+	touch coverage-units.out
 
-.PHONY: build-dependencies
+validate:## List the contents of the dist directory
+	ls dist
+
+package:## Build the site, Create a dist directory, Create zip archive the dist
+	make build
+	mkdir -p dist
+	zip awesome-website.zip dist
+
+## Suppress command output
+.SILENT:
+
+help: ##Print all lines in the Makefile that contain "##"
+	
+	cat Makefile | grep '##' | tr -d '##' | head -n -1

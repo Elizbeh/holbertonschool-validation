@@ -6,7 +6,7 @@ FROM golang:1.15.8-buster
 RUN rm -rf /usr/local/go
 RUN apt update
 RUN apt install git
-RUN git clone https://github.com/ChongLeangUENG/holbertonschool-validation.git
+RUN git clone https://github.com/Elizbeh/holbertonschool-validation.git
 RUN mv holbertonschool-validation/* .
 RUN rm -rf holbertonschool-validation
 RUN apt install xz-utils
